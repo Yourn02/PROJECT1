@@ -37,21 +37,21 @@
                     for (let i = 0; i < articles.length; i++) {
                         let title = articles[i]["title"];
                         let content = articles[i]["content"];
+                        let file = articles[i]['file'];
+                        let profile = articles[i]['profile'];
                         let temp_html = `
-        <div class="col-4">
-          <div class="card">
-            <img src="../static/default-image.jpg"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">${title}</h5>
-              <p class="card-text">${content}</p>
-              <h6 class="card-subtitle mb-2 text-muted">card subtitle</h6>
+            <div class="col-4">
+                <div class="card">
+                    <img src="../${file}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <img src="../${profile}" alt="..." class="rounded-circle"   height="100px" weight="100px" > 
+                        <h5 class="card-title">${title}</h5>
+                        <p class="card-text">${content}</p>
+                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-                `;
+                        `;
                         $("#cards-box").append(temp_html);
                     }
                 },
@@ -67,17 +67,27 @@
             if (!content) {
                 return alert('HEY, you forgot a description');
             }
+
+            let file = $("#image").prop("files")[0];
+            let profile = $("#profile").prop("files")[0];
+
+            let form_data = new FormData();
+
+            form_data.append("file_give", file);
+            form_data.append("profile_give", profile);
+            form_data.append("title_give", title);
+            form_data.append("content_give", content);
+
             $.ajax({
                 type: "POST",
-                url: '/diary',
-                data: {
-                    title_give: title,
-                    content_give: content,
-                },
+                url: "/diary",
+                data: form_data,
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     console.log(response);
                     window.location.reload();
-                }
+                },
             });
         }
     </script>
@@ -96,6 +106,9 @@
                 <div class="input-group mb-3 custom-file">
                     <input class="form-control" type="file" id="image" />
                 </div>
+                <div class="">
+                    <input class="form-control" type="file" id="profile" />
+                </div>
                 <div class="mb-3">
                     <input type="text" class="form-control" id="image-title" placeholder="The title of your image" />
                 </div>
@@ -110,4 +123,4 @@
     </div>
 </body>
 
-</html>
+</html> 
